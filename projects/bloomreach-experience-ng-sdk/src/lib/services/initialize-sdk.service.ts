@@ -22,7 +22,7 @@ export class InitializeSdkService {
     // // fetch Page Model API when navigated to a PageComponent
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        this.requestContextService.parseUrlPath(event.url);
+        this.requestContextService.parseUrlPath(event.urlAfterRedirects);
         this.fetchPageModel();
       }
     });
