@@ -4,7 +4,6 @@ import { ApiUrlsService } from './api-urls.service';
 
 import { ApiUrls, CompiledPathRegexp, Request, RequestContext } from '../common-sdk/types';
 import { _parseRequest } from '../common-sdk/utils/request-context';
-
 @Injectable()
 export class RequestContextService {
   private requestContext: RequestContext;
@@ -30,7 +29,10 @@ export class RequestContextService {
   }
 
   parseUrlPath(urlPath: string): void {
-    const request: Request = { hostname: window.location.hostname, path: urlPath };
+    const request: Request = {
+      hostname: (typeof window === 'undefined') ? undefined : window.location.hostname,
+      path: urlPath };
+
     this.parseRequest(request);
   }
 

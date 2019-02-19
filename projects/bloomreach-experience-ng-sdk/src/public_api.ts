@@ -12,3 +12,4 @@ export * from './lib/services/request-context.service';
 export * from './lib/cms-components/core/base-component/base-component.interface';
 export * from './lib/cms-components/core/single-content-component/single-content-component.component';
 export { default as getNestedObject } from './lib/common-sdk/utils/get-nested-object';
+export * from './lib/common-sdk/types';
