@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Injectable, Inject } from '@angular/core';
+import { NavigationEnd, Router, NavigationStart } from '@angular/router';
 
 import { RequestContextService } from './request-context.service';
 import { ApiUrlsService } from './api-urls.service';
@@ -12,17 +12,20 @@ import { Subscription } from 'rxjs';
 import { ApiUrls, ComponentMappings } from '../common-sdk/types';
 import { ComponentMappingsService } from '../services/component-mappings.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class InitializeSdkService {
+
   constructor(
     private pageModelService: PageModelService,
     private requestContextService: RequestContextService,
     private router: Router,
     private apiUrlsService: ApiUrlsService,
     private componentMappingsService: ComponentMappingsService
-  ) {}
+  ) {
+  }
 
   initialize(options: InitializeSdkOptions): Subscription {
+
     this.apiUrlsService.setApiUrls(options.apiUrls);
     this.requestContextService.parseUrlPath(this.router.url);
     if (options.componentMappings) {
@@ -38,6 +41,7 @@ export class InitializeSdkService {
         this.fetchPageModel();
       }
     });
+
   }
 
   private fetchPageModel(): void {

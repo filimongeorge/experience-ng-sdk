@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { BehaviorSubject, Observable, of, Subject} from 'rxjs';
@@ -17,7 +17,7 @@ import {
   toUrlEncodedFormData
 } from '../common-sdk/utils/page-model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PageModelService {
   channelManagerApi: any;
   pageModel: any;
@@ -33,10 +33,12 @@ export class PageModelService {
   };
 
   constructor(
-    private http: HttpClient,
+    @Inject('bre-http-client') private http: HttpClient,
     private apiUrlsService: ApiUrlsService,
     private requestContextService: RequestContextService
-  ) {}
+  ) {
+    console.log('construction page model service ...');
+  }
 
   fetchPageModel(): any {
     const apiUrl: string = this.buildApiUrl();

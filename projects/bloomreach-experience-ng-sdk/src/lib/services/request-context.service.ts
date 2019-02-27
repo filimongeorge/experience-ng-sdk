@@ -4,7 +4,7 @@ import { ApiUrlsService } from './api-urls.service';
 
 import { ApiUrls, CompiledPathRegexp, Request, RequestContext } from '../common-sdk/types';
 import { _parseRequest } from '../common-sdk/utils/request-context';
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class RequestContextService {
   private requestContext: RequestContext;
   private debugging = false;
