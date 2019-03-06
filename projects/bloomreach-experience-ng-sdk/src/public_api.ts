@@ -16,4 +16,4 @@ export * from './lib/cms-components/core/render-cms-component/render-cms-compone
 export * from './lib/cms-components/core/cms-edit-button/cms-edit-button.component';
 export { default as getNestedObject } from './lib/common-sdk/utils/get-nested-object';
 export * from './lib/common-sdk/types';
-// export * from './lib/common-sdk/utils/render-cms-component';
+export * from './lib/common-sdk/utils/render-cms-component';
