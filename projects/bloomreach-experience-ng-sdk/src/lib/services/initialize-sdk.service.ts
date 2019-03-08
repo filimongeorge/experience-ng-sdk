@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { NavigationEnd, Router, NavigationStart } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 import { RequestContextService } from './request-context.service';
 import { ApiUrlsService } from './api-urls.service';
@@ -7,7 +7,6 @@ import { PageModelService } from './page-model.service';
 import { _initializeCmsIntegration } from '../common-sdk/utils/initialize-cms-integration';
 import { logCmsCreateOverlay } from '../common-sdk/utils/page-model';
 import { Subscription, Observable } from 'rxjs';
-import { ComponentMappingsService } from '../services/component-mappings.service';
 
 @Injectable({ providedIn: 'root' })
 export class InitializeSdkService {
