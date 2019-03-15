@@ -61,14 +61,22 @@ export class PageModelService {
     const apiUrl: string = this.buildApiUrl();
     return this.http.get<any>(apiUrl, this.httpGetOptions).pipe(
       tap(response => {
-        this.pageModel = response;
-        this.setPageModelSubject(response);
-        const preview: boolean = this.requestContextService.isPreviewRequest();
-        const debugging: boolean = this.requestContextService.getDebugging();
-        updatePageMetaData(this.pageModel.page, this.channelManagerApi, preview, debugging);
+        this.updatePageModel(response);
       }),
       catchError(this.handleError('fetchPageModel', undefined))
     );
+  }
+
+  /**
+   * External updatePageModel method that can be used with pageModel is fetched outside of the sdk.
+   * @param pageModel new pageModel
+   */
+  updatePageModel(pageModel: any): void {
+    this.pageModel = pageModel;
+    this.setPageModelSubject(pageModel);
+    const preview: boolean = this.requestContextService.isPreviewRequest();
+    const debugging: boolean = this.requestContextService.getDebugging();
+    updatePageMetaData(this.pageModel.page, this.channelManagerApi, preview, debugging);
   }
 
   // no subject is needed for some classes that get the page-model after the initial fetch, such as the ImageUrlService
