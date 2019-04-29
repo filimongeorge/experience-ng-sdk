@@ -57,11 +57,17 @@ export class PageModelService {
     }
   }
 
-  fetchPageModel(): any {
+  /**
+   * Fetches a new page model and optionally updates the SDK to use the new pageModel.
+   * @param updatePageModel determines whether the page model should be immediately updated.
+   */
+  fetchPageModel(updatePageModel: boolean = true): any {
     const apiUrl: string = this.buildApiUrl();
     return this.http.get<any>(apiUrl, this.httpGetOptions).pipe(
       tap(response => {
-        this.updatePageModel(response);
+        if (updatePageModel) {
+          this.updatePageModel(response);
+        }
       }),
       catchError(this.handleError('fetchPageModel', undefined))
     );
