@@ -1,6 +1,6 @@
 {
   "name": "@bkoury/bloomreach-experience-ng-sdk",
-  "version": "0.1.3-rc1",
+  "version": "0.1.4-rc1",
   "peerDependencies": {
     "@angular/common": "^6.0.0-rc.0 || ^7.0.0",
     "@angular/core": "^6.0.0-rc.0 || ^7.0.0",
