@@ -1,6 +1,6 @@
 {
-  "name": "bloomreach-experience-ng-sdk-csr-app",
-  "version": "0.1.4-rc1",
+  "name": "@filimongeorge/bloomreach-ng-sdk",
+  "version": "0.3.2",
   "scripts": {
     "ng": "ng",
     "start": "ng build --prod bloomreach-experience-ng-sdk && ng serve",
@@ -10,7 +10,7 @@
     "e2e": "ng e2e",
     "build_lib": "ng build --prod bloomreach-experience-ng-sdk",
     "npm_pack": "cd dist/bloomreach-experience-ng-sdk && npm pack",
-    "package": "npm run build_lib && npm run npm_pack"
+    "package": "npm run build_lib && cp README.md dist/bloomreach-experience-ng-sdk && npm run npm_pack"
   },
   "private": true,
   "dependencies": {

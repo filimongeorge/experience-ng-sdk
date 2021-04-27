@@ -1,13 +1,25 @@
+/*
+ * Copyright 2019 Hippo B.V. (http://www.onehippo.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { Injectable, Injector } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
 import { BehaviorSubject, Observable, of, Subject} from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-
 import { ApiUrlsService } from './api-urls.service';
 import { RequestContextService } from './request-context.service';
-
-import { ApiUrls } from '../common-sdk/types';
 import {
   _buildApiUrl,
   _getContentViaReference,
@@ -34,43 +46,29 @@ export class PageModelService {
   };
 
   constructor(
-    private injector: Injector,
     private apiUrlsService: ApiUrlsService,
-    private requestContextService: RequestContextService
+    private requestContextService: RequestContextService,
+    private http: HttpClient,
   ) {
-    this.resolveHttpClient();
+    this.pageModelSubject.subscribe(() => this.processPageModel());
   }
 
-  private resolveHttpClient(): void {
-    try {
-      this.http = this.injector.get('bre-http-client');
-    } catch {}
-
-    if (!this.http) {
-      try {
-        this.http = this.injector.get(HttpClient);
-      } catch {
-        throw new Error(`Couldn't resolve HttpClient.
-          Please make sure to import HttpClientModule in your app root module and
-          provide HttpClient class for the 'bre-http-client' token`);
-      }
-    }
-  }
-
-  /**
-   * Fetches a new page model and optionally updates the SDK to use the new pageModel.
-   * @param updatePageModel determines whether the page model should be immediately updated.
-   */
-  fetchPageModel(updatePageModel: boolean = true): any {
+  fetchPageModel() {
     const apiUrl: string = this.buildApiUrl();
     return this.http.get<any>(apiUrl, this.httpGetOptions).pipe(
-      tap(response => {
-        if (updatePageModel) {
-          this.updatePageModel(response);
-        }
-      }),
+      tap(response => void this.setPageModel(response)),
       catchError(this.handleError('fetchPageModel', undefined))
     );
+  }
+
+  private processPageModel() {
+    if (!this.pageModel) {
+      return;
+    }
+
+    const preview = this.requestContextService.isPreviewRequest();
+    const debugging = this.requestContextService.getDebugging();
+    updatePageMetaData(this.pageModel.page, this.channelManagerApi, preview, debugging);
   }
 
   /**
@@ -88,6 +86,13 @@ export class PageModelService {
   // no subject is needed for some classes that get the page-model after the initial fetch, such as the ImageUrlService
   getPageModel(): any {
     return this.pageModel;
+  }
+
+  setPageModel(value: any) {
+    this.pageModel = value;
+    this.pageModelSubject.next(value);
+
+    return this.pageModelSubject.asObservable();
   }
 
   getPageModelSubject(): Subject<any> {
@@ -112,9 +117,15 @@ export class PageModelService {
 
     return this.http.post<any>(url, body, this.httpPostOptions).pipe(
       tap(response => {
-        const preview: boolean = this.requestContextService.isPreviewRequest();
-        this.pageModel = _updateComponent(response, componentId, this.pageModel, this.channelManagerApi, preview, debugging);
-        this.setPageModelSubject(this.pageModel);
+        const preview = this.requestContextService.isPreviewRequest();
+        this.setPageModel(_updateComponent(
+          response,
+          componentId,
+          this.pageModel,
+          this.channelManagerApi,
+          preview,
+          debugging
+        ));
       }),
       catchError(this.handleError('updateComponent', undefined)));
   }
@@ -124,10 +135,12 @@ export class PageModelService {
   }
 
   private buildApiUrl(componentId?: string): string {
-    const apiUrls: ApiUrls = this.apiUrlsService.getApiUrls();
-    const preview: boolean = this.requestContextService.isPreviewRequest();
-    const urlPath: string = this.requestContextService.getPath();
-    return _buildApiUrl(apiUrls, preview, urlPath, componentId);
+    const apiUrls = this.apiUrlsService.getApiUrls();
+    const preview = this.requestContextService.isPreviewRequest();
+    const urlPath = this.requestContextService.getPath();
+    const query = this.requestContextService.getQuery();
+
+    return _buildApiUrl(apiUrls, preview, urlPath, query, componentId);
   }
 
   /**

@@ -1,12 +1,28 @@
+/*
+ * Copyright 2019 Hippo B.V. (http://www.onehippo.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import pathToRegexp from 'path-to-regexp';
 
 import { ApiUrls, CompiledPathRegexp, Request, RequestContext } from '../types';
 
 export function _parseRequest(request: Request, compiledPathRegexp: CompiledPathRegexp, apiUrls: ApiUrls, debug: boolean): RequestContext {
-  const parsedUrlPath: string = compiledPathRegexp.regexp.exec(request.path);
-
-  const path: string = getPathFromParsedUrl(parsedUrlPath, compiledPathRegexp.regexpKeys);
-  const preview: boolean = detectPreview(request, apiUrls, parsedUrlPath, compiledPathRegexp.regexpKeys);
+  const [urlPath, query = ''] = request.path.split('?', 2);
+  const parsedUrlPath = compiledPathRegexp.regexp.exec(urlPath);
+  const path = getPathFromParsedUrl(parsedUrlPath, compiledPathRegexp.regexpKeys);
+  const preview = detectPreview(request, apiUrls, parsedUrlPath, compiledPathRegexp.regexpKeys);
 
   if (debug) {
     console.log(`### SDK debugging ### parsing URL-path '%s'`, request.path);
@@ -14,7 +30,7 @@ export function _parseRequest(request: Request, compiledPathRegexp: CompiledPath
     console.log(`### SDK debugging ### preview mode is %s`, preview);
   }
 
-  return new RequestContext(path, preview);
+  return new RequestContext(path, preview, query);
 }
 
 function getPathFromParsedUrl(parsedUrlPath: string, regexpKeys: pathToRegexp.Key[]): string {
@@ -29,33 +45,15 @@ function getPathFromParsedUrl(parsedUrlPath: string, regexpKeys: pathToRegexp.Ke
   return '';
 }
 
-function detectPreview(request: Request, apiUrls: ApiUrls, parsedUrlPath: string, regexpKeys: pathToRegexp.Key[]): boolean {
-  if (!request.hostname) {
-    return false;
-  }
-
-  const hostname: string = getHostname(request.hostname);
-
-  // detect CMS/preview mode using query parameter
-  let preview: boolean = hasPreviewQueryParameter(request.path);
-  if (!preview) {
-    // otherwise use hostname
-    preview = isMatchingPreviewHostname(hostname, apiUrls);
-  }
-  if (!preview) {
-    // or use preview prefix for preview detection
-    preview = hasPreviewPathPrefix(parsedUrlPath, regexpKeys);
-  }
-
-  return preview;
+function detectPreview(request: Request, apiUrls: ApiUrls, parsedUrlPath: string, regexpKeys: pathToRegexp.Key[]) {
+  return hasPreviewQueryParameter(request.path)
+    || hasPreviewPathPrefix(parsedUrlPath, regexpKeys)
+    || request.hostname && isMatchingPreviewHostname(getHostname(request.hostname), apiUrls);
 }
 
 // removes port number from hostname
-function getHostname(hostname: string): string {
-  if (hostname.indexOf(':') !== -1) {
-    return hostname.substring(0, hostname.indexOf(':'));
-  }
-  return hostname;
+function getHostname(hostname: string) {
+  return hostname.split(':', 1)[0];
 }
 
 function hasPreviewQueryParameter(urlPath: string): boolean {

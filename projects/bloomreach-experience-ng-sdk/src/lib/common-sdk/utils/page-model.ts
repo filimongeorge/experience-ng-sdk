@@ -1,5 +1,20 @@
-import jsonpointer from 'jsonpointer';
+/*
+ * Copyright 2019 Hippo B.V. (http://www.onehippo.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+import jsonpointer from 'jsonpointer';
 import { ApiUrls, EnvironmentApiUrls } from '../types';
 import { addPageMetaData } from './cms-meta-data';
 
@@ -11,7 +26,7 @@ export function updatePageMetaData(pageModel: any, channelManagerApi: any, previ
   }
 }
 
-export function _buildApiUrl(apiUrls: ApiUrls, preview: boolean, urlPath: string, componentId?: string): string {
+export function _buildApiUrl(apiUrls: ApiUrls, preview: boolean, urlPath: string, query: string, componentId?: string): string {
   // use either preview or live URLs
   const envApiUrls: EnvironmentApiUrls = preview ? apiUrls.preview : apiUrls.live;
 
@@ -34,6 +49,11 @@ export function _buildApiUrl(apiUrls: ApiUrls, preview: boolean, urlPath: string
   if (componentId) {
     url = addComponentRenderingURL(url, componentId, apiUrls);
   }
+
+  if (query) {
+    url += (url.includes('?') ? '&' : '?') + query;
+  }
+
   return url;
 }
 
@@ -86,7 +106,6 @@ export function _updateComponent(
       }
       Object.assign(pageModel.content, response.content);
     }
-    updatePageMetaData(pageModel, channelManagerApi, preview, debugging);
   }
   return pageModel;
 }
