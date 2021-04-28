@@ -34,7 +34,6 @@ export class PageModelService {
   channelManagerApi: any;
   pageModel: any;
   pageModelSubject: Subject<any> = new BehaviorSubject<any>(this.pageModel);
-  http: HttpClient;
 
   private httpGetOptions = {
     withCredentials: true

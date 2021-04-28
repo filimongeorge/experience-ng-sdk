@@ -1,6 +1,7 @@
 {
-  "name": "@filimongeorge/bloomreach-ng-sdk",
+  "name": "@fgeo/bloomreach-experience-ng-sdk",
   "version": "0.3.2",
+  "private": false,
   "scripts": {
     "ng": "ng",
     "start": "ng build --prod bloomreach-experience-ng-sdk && ng serve",
@@ -12,7 +13,6 @@
     "npm_pack": "cd dist/bloomreach-experience-ng-sdk && npm pack",
     "package": "npm run build_lib && cp README.md dist/bloomreach-experience-ng-sdk && npm run npm_pack"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^7.0.0",
     "@angular/common": "^7.0.0",
