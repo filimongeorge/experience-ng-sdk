@@ -53,7 +53,7 @@ import { InitializeSdkService } from './services/initialize-sdk.service';
   exports: [CmsEditButtonComponent, RenderCmsComponent ]
 })
 export class BloomreachExperienceNgSdkModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<BloomreachExperienceNgSdkModule> {
     return {
       ngModule: BloomreachExperienceNgSdkModule,
       providers: [

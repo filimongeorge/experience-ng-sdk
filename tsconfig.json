@@ -18,6 +18,7 @@
       "dom"
     ],
     "paths": {
+      "path-to-regexp": ["node_modules/path-to-regexp/dist/index"],
       "bloomreach-experience-ng-sdk": [
         "dist/bloomreach-experience-ng-sdk"
       ],

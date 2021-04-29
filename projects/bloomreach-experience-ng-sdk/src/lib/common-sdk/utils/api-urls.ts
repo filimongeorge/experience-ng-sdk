@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import pathToRegexp from 'path-to-regexp';
+import { pathToRegexp } from 'path-to-regexp';
 
 import { ApiUrls, CompiledPathRegexp, EnvironmentApiUrls } from '../types';
 

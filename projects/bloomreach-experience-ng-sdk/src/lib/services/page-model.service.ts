@@ -32,7 +32,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class PageModelService {
   channelManagerApi: any;
-  pageModel: any;
+  pageModel!: any;
   pageModelSubject: Subject<any> = new BehaviorSubject<any>(this.pageModel);
 
   private httpGetOptions = {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import jsonpointer from 'jsonpointer';
+import * as jsonpointer from 'jsonpointer';
 import { ApiUrls, EnvironmentApiUrls } from '../types';
 import { addPageMetaData } from './cms-meta-data';
 
