@@ -1,6 +1,6 @@
 {
   "name": "@fgeo/bloomreach-experience-ng-sdk",
-  "version": "0.3.2-rc4",
+  "version": "0.3.2-rc7",
   "private": false,
   "scripts": {
     "ng": "ng",

@@ -1,6 +1,6 @@
 {
   "name": "@fgeo/bloomreach-experience-ng-sdk",
-  "version": "0.3.2-rc4",
+  "version": "0.3.2-rc7",
   "peerDependencies": {
     "@angular/common": "^7.0.0",
     "@angular/core": "^7.0.0",
