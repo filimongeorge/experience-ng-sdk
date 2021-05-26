@@ -26,5 +26,8 @@
         "dist/bloomreach-experience-ng-sdk/*"
       ]
     }
+  },
+  "angularCompilerOptions": {
+    "enableIvy": false
   }
 }
